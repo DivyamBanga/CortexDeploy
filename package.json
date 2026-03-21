@@ -1,0 +1,14 @@
+{
+  "name": "cortex-waitlist",
+  "version": "1.0.0",
+  "description": "Cortex — waitlist landing page",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0"
+  }
+}

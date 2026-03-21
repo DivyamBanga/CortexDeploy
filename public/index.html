@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cortex — Never Start From Scratch</title>
+  <meta name="description" content="A visual memory layer for AI chats. Past conversations — searched, summarized, and fed right into your next one.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@300;400;500&family=Unbounded:wght@400;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Film grain via SVG noise -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    </filter>
+  </svg>
+  <div class="grain"></div>
+
+  <div class="vignette"></div>
+
+  <main>
+    <div class="content">
+      <h1 class="logo">CORTEX</h1>
+      <p class="tagline">Never start from scratch again.</p>
+      <p class="description">
+        A memory layer for AI chats. Your past conversations &mdash; searched, summarized, and fed right into your next one.
+      </p>
+
+      <form id="signup-form" class="signup-form" autocomplete="on">
+        <div class="input-group">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+            autocomplete="email"
+            spellcheck="false"
+          >
+          <button type="submit" id="submit-btn">Join the Waitlist</button>
+        </div>
+        <p class="form-message" id="form-message"></p>
+      </form>
+
+      <p class="counter" id="counter"></p>
+    </div>
+  </main>
+
+  <script src="/background.js"></script>
+  <script>
+    const form = document.getElementById('signup-form');
+    const emailInput = document.getElementById('email');
+    const btn = document.getElementById('submit-btn');
+    const msg = document.getElementById('form-message');
+    const counter = document.getElementById('counter');
+
+    function showCount(n) {
+      if (n > 0) {
+        counter.textContent = `Join ${n} ${n === 1 ? 'other' : 'others'} on the waitlist`;
+      }
+    }
+
+    // Load current count
+    fetch('/api/count')
+      .then((r) => r.json())
+      .then((d) => showCount(d.count))
+      .catch(() => {});
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Joining\u2026';
+      msg.textContent = '';
+      msg.className = 'form-message';
+
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.textContent = "You\u2019re on the list. We\u2019ll be in touch.";
+          msg.className = 'form-message success';
+          emailInput.value = '';
+          showCount(data.count);
+        } else {
+          msg.textContent = data.error || 'Something went wrong.';
+          msg.className = 'form-message error';
+        }
+      } catch {
+        msg.textContent = 'Connection error. Try again.';
+        msg.className = 'form-message error';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Join the Waitlist';
+      }
+    });
+  </script>
+
+</body>
+</html>

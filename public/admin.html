@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cortex Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@300;400;500&family=Unbounded:wght@400;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06060a;
+      --surface: #0e0e14;
+      --border: #1a1a24;
+      --primary: #00ffc8;
+      --accent: #ff4d6a;
+      --text: #e4e4ec;
+      --text-dim: #6b6b80;
+      --font-display: 'Unbounded', sans-serif;
+      --font-mono: 'Azeret Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Login ── */
+    .login-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .login-box {
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .login-box h1 {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .login-box p {
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-input-group {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .login-input-group:focus-within {
+      border-color: rgba(0, 255, 200, 0.3);
+    }
+
+    .login-input-group input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.8rem 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .login-input-group button {
+      padding: 0.8rem 1.4rem;
+      background: var(--primary);
+      color: var(--bg);
+      border: none;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+
+    .login-input-group button:hover { background: #33ffd4; }
+
+    .login-error {
+      color: var(--accent);
+      font-size: 0.78rem;
+      margin-top: 0.7rem;
+      min-height: 1.2em;
+    }
+
+    /* ── Dashboard ── */
+    .dashboard {
+      display: none;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dash-header h1 {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 0.06em;
+    }
+
+    .dash-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .dash-actions button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .dash-actions button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .stat-card {
+      display: inline-block;
+      padding: 1.2rem 1.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card .label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-card .value {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 2.2rem;
+      color: var(--primary);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.7rem 1rem;
+      font-size: 0.82rem;
+      border-bottom: 1px solid rgba(26, 26, 36, 0.5);
+    }
+
+    tr:hover td {
+      background: rgba(0, 255, 200, 0.02);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 3rem 1rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login -->
+  <div class="login-wrap" id="login-view">
+    <div class="login-box">
+      <h1>CORTEX</h1>
+      <p>Admin access</p>
+      <form id="login-form">
+        <div class="login-input-group">
+          <input type="password" id="password" placeholder="Password" autofocus>
+          <button type="submit">Enter</button>
+        </div>
+      </form>
+      <p class="login-error" id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard" id="dashboard">
+    <div class="dash-header">
+      <h1>CORTEX WAITLIST</h1>
+      <div class="dash-actions">
+        <button id="export-btn">Export CSV</button>
+        <button id="refresh-btn">Refresh</button>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="label">Total signups</div>
+      <div class="value" id="total-count">0</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Signed up</th>
+          </tr>
+        </thead>
+        <tbody id="signups-body"></tbody>
+      </table>
+      <p class="empty" id="empty-msg" style="display:none">No signups yet.</p>
+    </div>
+  </div>
+
+  <script>
+    let storedPassword = '';
+
+    const loginView = document.getElementById('login-view');
+    const dashboard = document.getElementById('dashboard');
+    const loginForm = document.getElementById('login-form');
+    const passwordInput = document.getElementById('password');
+    const loginError = document.getElementById('login-error');
+    const totalCount = document.getElementById('total-count');
+    const signupsBody = document.getElementById('signups-body');
+    const emptyMsg = document.getElementById('empty-msg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.textContent = '';
+      const pw = passwordInput.value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          storedPassword = pw;
+          loginView.style.display = 'none';
+          dashboard.style.display = 'block';
+          loadSignups();
+        } else {
+          loginError.textContent = data.error || 'Wrong password.';
+        }
+      } catch {
+        loginError.textContent = 'Connection error.';
+      }
+    });
+
+    async function loadSignups() {
+      try {
+        const res = await fetch('/api/admin/signups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: storedPassword }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          loginView.style.display = '';
+          dashboard.style.display = 'none';
+          return;
+        }
+
+        totalCount.textContent = data.total;
+        signupsBody.innerHTML = '';
+
+        if (data.signups.length === 0) {
+          emptyMsg.style.display = '';
+        } else {
+          emptyMsg.style.display = 'none';
+          data.signups.forEach((s, i) => {
+            const tr = document.createElement('tr');
+            const date = new Date(s.created_at + 'Z');
+            tr.innerHTML = `
+              <td>${data.total - i}</td>
+              <td>${escapeHtml(s.email)}</td>
+              <td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
+            `;
+            signupsBody.appendChild(tr);
+          });
+        }
+      } catch {
+        /* silent */
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', loadSignups);
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      storedPassword = '';
+      passwordInput.value = '';
+      dashboard.style.display = 'none';
+      loginView.style.display = '';
+    });
+
+    document.getElementById('export-btn').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/admin/signups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: storedPassword }),
+        });
+        const data = await res.json();
+        if (!res.ok) return;
+
+        let csv = 'Email,Signed Up\n';
+        data.signups.forEach((s) => {
+          csv += `"${s.email}","${s.created_at}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cortex-waitlist-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch {
+        /* silent */
+      }
+    });
+  </script>
+
+</body>
+</html>

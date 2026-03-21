@@ -1,0 +1,236 @@
+:root {
+  --bg: #06060a;
+  --surface: #0e0e14;
+  --primary: #00ffc8;
+  --primary-bright: #33ffd4;
+  --secondary: #2244ff;
+  --accent: #ff4d6a;
+  --text: #e4e4ec;
+  --text-dim: #6b6b80;
+  --font-display: 'Unbounded', sans-serif;
+  --font-mono: 'Azeret Mono', monospace;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  cursor: default;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Canvas ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* ── Grain overlay ── */
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.04;
+  filter: url(#grain-filter);
+}
+
+/* ── Vignette ── */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 35%,
+    rgba(6, 6, 10, 0.35) 65%,
+    rgba(6, 6, 10, 0.75) 100%
+  );
+}
+
+/* ── Main layout ── */
+main {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  height: 100dvh;
+  padding: 2rem;
+}
+
+.content {
+  text-align: center;
+  max-width: 620px;
+  width: 100%;
+}
+
+/* ── Typography ── */
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.2rem, 9vw, 5.5rem);
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  background: linear-gradient(160deg, #ffffff 30%, #80ffd4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 40px rgba(0, 255, 200, 0.12))
+    drop-shadow(0 0 80px rgba(0, 255, 200, 0.04));
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 2.4vw, 1.3rem);
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.015em;
+}
+
+.description {
+  font-weight: 300;
+  font-size: clamp(0.78rem, 1.4vw, 0.92rem);
+  line-height: 1.75;
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Form ── */
+.signup-form {
+  margin-bottom: 1rem;
+}
+
+.input-group {
+  display: flex;
+  max-width: 440px;
+  margin: 0 auto;
+  border: 1px solid rgba(0, 255, 200, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(14, 14, 20, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group:focus-within {
+  border-color: rgba(0, 255, 200, 0.35);
+  box-shadow: 0 0 24px rgba(0, 255, 200, 0.06), 0 0 60px rgba(0, 255, 200, 0.02);
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 400;
+  outline: none;
+}
+
+.input-group input::placeholder {
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+.input-group button {
+  padding: 0.85rem 1.6rem;
+  background: var(--primary);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.input-group button:hover {
+  background: var(--primary-bright);
+}
+
+.input-group button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ── Messages ── */
+.form-message {
+  font-size: 0.78rem;
+  margin-top: 0.7rem;
+  min-height: 1.2em;
+  letter-spacing: 0.02em;
+}
+
+.form-message.success {
+  color: var(--primary);
+}
+
+.form-message.error {
+  color: var(--accent);
+}
+
+.counter {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+/* ── Mobile ── */
+@media (max-width: 560px) {
+  main {
+    padding: 1.5rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+    border-radius: 8px;
+  }
+
+  .input-group input {
+    padding: 0.8rem 1rem;
+    text-align: center;
+  }
+
+  .input-group button {
+    padding: 0.8rem;
+    border-top: 1px solid rgba(0, 255, 200, 0.1);
+  }
+
+  .description {
+    margin-bottom: 2rem;
+  }
+}
