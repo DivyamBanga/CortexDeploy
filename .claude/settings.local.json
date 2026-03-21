@@ -4,7 +4,15 @@
       "Bash(npm --version)",
       "Bash(npm install:*)",
       "Bash(node -e \":*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(claude mcp:*)",
+      "mcp__stitch__create_project",
+      "mcp__stitch__generate_screen_from_text",
+      "mcp__stitch__list_screens",
+      "mcp__stitch__get_project",
+      "Bash(node -c public/background.js)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)"
     ]
   }
 }
