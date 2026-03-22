@@ -12,7 +12,13 @@
       "mcp__stitch__get_project",
       "Bash(node -c public/background.js)",
       "Bash(netstat -ano)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(npx create-next-app@14 frontend --typescript --tailwind --eslint --app --src-dir --no-import-alias --use-npm)",
+      "Bash(npx next:*)",
+      "Bash(curl:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx kill-port:*)"
     ]
   }
 }
